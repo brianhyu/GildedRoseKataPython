@@ -24,31 +24,25 @@ class GildedRoseTest(unittest.TestCase):
 
     # My own tests:
     # Logical Test 1
-    def test_quality_degrades_twice_as_fast_after_sell_in(self):
-        items = [Item(name="+5 Dexterity Vest", sell_in=0, quality=10)]
+    def test_conjured_items_degrade_twice_as_fast(self):
+        items = [Item(name="ConjuredItem", sell_in=2, quality=8)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
-        self.assertEqual(items[0].quality, 9, "FAIL: Expected quality to decrease by 2 but it decreased by 1")
+        self.assertEqual(items[0].quality, 6, "Conjured items should degrade twice as fast")
 
     # Logical Test 2
     def test_quality_never_negative(self):
-        items = [Item(name="Elixir of the Mongoose", sell_in=5, quality=0)]
+        items = [Item(name="ABC", sell_in=5, quality=0.5)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
-        self.assertEqual(items[0].quality, -1, "FAIL: Expected quality to be non-negative but found negative")
+        self.assertGreaterEqual(items[0].quality, 0, "FAIL: Expected quality to be non-negative")
 
-    # Logical Test 3
-    def test_backstage_passes_quality_increase_and_drop(self):
-        items = [
-            Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=10, quality=20),
-            Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=5, quality=20),
-            Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=0, quality=20),
-        ]
+    # LogicalTest 3
+    def test_quality_never_exceed_50(self):
+        items = [Item(name="Aged Brie", sell_in=5, quality=49.5)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
-        self.assertEqual(items[0].quality, 21, "FAIL: Expected +2 increase but found different value")
-        self.assertEqual(items[1].quality, 22, "FAIL: Expected +3 increase but found different value")
-        self.assertEqual(items[2].quality, 1, "FAIL: Expected quality to drop to 0 but found different value")
+        self.assertLess(items[0].quality, 50, "FAIL: Expected quality to not exceed 50")
 
     # Syntax Error Test
     def test_calling_non_existent_method(self):
